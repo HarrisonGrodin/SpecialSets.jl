@@ -1,0 +1,4 @@
+name = "SpecialSets"
+uuid = "c6b63f46-9023-11e8-3b28-1f7d8c94880d"
+authors = ["Harrison Grodin <harrison.grodin@gmail.com>"]
+version = "0.1.0"

@@ -21,6 +21,8 @@ abstract type InfiniteSet <: SpecialSet end
 Base.eltype(::InfiniteSet) = Any
 
 
+include("operations.jl")
+
 include("show.jl")
 
 end # module

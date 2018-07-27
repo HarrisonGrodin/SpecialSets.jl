@@ -18,6 +18,9 @@ end
 intersect(::TypeSet{T}, ::TypeSet{U}) where {T, U} = _intersect_to_typeset(T, U)
 intersect(::TypeSet{T}, ::Interval{U}) where {T, U} = _intersect_to_typeset(T, U)
 intersect(::Interval{U}, ::TypeSet{T}) where {T, U} = _intersect_to_typeset(T, U)
+Base.issubset(s, ::TypeSet{T}) where {T} = eltype(s) <: T
+Base.issubset(s::SpecialSet, ::TypeSet{T}) where {T} = eltype(s) <: T
+Base.issubset(s::SetIntersection, ::TypeSet{T}) where {T} = eltype(s) <: T
 condition(var, ::TypeSet{T}) where {T} = "$var ∈ $(setname(T))"
 
 
@@ -40,6 +43,8 @@ function intersect(a::LessThan{T}, b::LessThan{U}) where {T,U}
     V === Union{} && return ∅
     intersect(convert(LessThan{V}, a), convert(LessThan{V}, b))
 end
+Base.issubset(a::LessThan{T}, b::LessThan{U}) where {U,T<:U} =
+    a.value == b.value ? (a.inclusive ≤ b.inclusive) : a.value < b.value
 function condition(var, s::LessThan)
     sign = s.inclusive ? '≤' : '<'
     "$var $sign $(s.value)"
@@ -64,6 +69,8 @@ function intersect(a::GreaterThan{T}, b::GreaterThan{U}) where {T,U}
     V === Union{} && return ∅
     intersect(convert(GreaterThan{V}, a), convert(GreaterThan{V}, b))
 end
+Base.issubset(a::GreaterThan{T}, b::GreaterThan{U}) where {U,T<:U} =
+    a.value == b.value ? (a.inclusive ≤ b.inclusive) : a.value > b.value
 function condition(var, s::GreaterThan)
     sign = s.inclusive ? '≥' : '>'
     "$var $sign $(s.value)"
@@ -105,6 +112,7 @@ function intersect(a::NotEqual{T}, b::InfiniteSet) where {T}
     SetIntersection(NotEqual{T}(keep...), b)
 end
 intersect(b::InfiniteSet, a::NotEqual) = intersect(a, b)
+Base.issubset(a::NotEqual, b::NotEqual) = b.values ⊆ a.values
 function condition(var, s::NotEqual)
     length(s.values) == 1 && return "$var ≠ $(first(s.values))"
     "$var ∉ {$(join(s.values, ", "))}"

@@ -14,6 +14,13 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
         @test TypeSet(Int) ∩ TypeSet(Int) == TypeSet(Int)
         @test TypeSet(Integer) ∩ TypeSet(Number) == TypeSet(Integer)
         @test standard(TypeSet(Int), NotEqual(0))
+
+        @test TypeSet(Int) ⊆ TypeSet(Int)
+        @test TypeSet(Int) ⊆ TypeSet(Number)
+        @test TypeSet(Number) ⊈ TypeSet(Int)
+        @test TypeSet(Float64) ⊈ TypeSet(Int)
+        @test LessThan(3) ⊆ TypeSet(Int)
+        @test (GreaterThan(3) ∩ LessThan(12, true)) ⊆ TypeSet(Int)
     end
 
     @testset "LessThan" begin
@@ -34,6 +41,16 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
         @test LessThan(3, true) ∩ LessThan(3, true) == LessThan(3, true)
         @test LessThan(3) ∩ LessThan(3.5, true) == ∅
         @test LessThan{Number}(3) ∩ LessThan(3.5, true) == LessThan(3.0)
+
+        @test LessThan(0) ⊆ LessThan(0)
+        @test LessThan(0) ⊆ LessThan(0, true)
+        @test LessThan(0, true) ⊈ LessThan(0)
+        @test LessThan(0, true) ⊆ LessThan(0, true)
+        @test LessThan(0) ⊆ LessThan(9)
+        @test LessThan(0) ⊈ LessThan(8.7)
+        @test LessThan{Number}(0) ⊈ LessThan(8.7)
+        @test LessThan{Float64}(0) ⊆ LessThan(8.7)
+        @test LessThan{Number}(0) ⊆ LessThan{Number}(8.7)
     end
 
     @testset "GreaterThan" begin
@@ -54,6 +71,16 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
         @test GreaterThan(1, true) ∩ GreaterThan(1, true) == GreaterThan(1, true)
         @test GreaterThan(3) ∩ GreaterThan(3.5, true) == ∅
         @test GreaterThan{Number}(3) ∩ GreaterThan(3.5, true) == GreaterThan(3.5, true)
+
+        @test GreaterThan(-5) ⊆ GreaterThan(-5)
+        @test GreaterThan(-5) ⊆ GreaterThan(-5, true)
+        @test GreaterThan(-5, true) ⊈ GreaterThan(-5)
+        @test GreaterThan(-5, true) ⊆ GreaterThan(-5, true)
+        @test GreaterThan(-5) ⊆ GreaterThan(-7)
+        @test GreaterThan(-5) ⊈ GreaterThan(3)
+        @test GreaterThan(4) ⊈ GreaterThan(4.0)
+        @test GreaterThan{Float64}(4) ⊆ GreaterThan(4.0)
+        @test GreaterThan{Real}(4) ⊈ GreaterThan(4.0)
     end
 
     @testset "LessThan ∩ GreaterThan" begin
@@ -67,6 +94,12 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
         @test standard(GreaterThan(3.0), LessThan(4.0))
         @test GreaterThan{Number}(3) ∩ LessThan(4.0) ==
             SetIntersection(GreaterThan(3.0), LessThan(4.0))
+
+        @test (GreaterThan(3) ∩ LessThan(5)) ⊆ (GreaterThan(3) ∩ LessThan(5))
+        @test (GreaterThan(3) ∩ LessThan(5, true)) ⊆ (GreaterThan(0, true) ∩ LessThan(6, true))
+        @test (GreaterThan(0) ∩ LessThan(2)) ⊆ (GreaterThan(0) ∩ LessThan(3))
+        @test (GreaterThan(0) ∩ LessThan(2)) ⊈ (GreaterThan(1) ∩ LessThan(3))
+        @test (GreaterThan(0) ∩ LessThan(2)) ⊈ (GreaterThan(3) ∩ LessThan(10))
     end
 
     @testset "NotEqual" begin

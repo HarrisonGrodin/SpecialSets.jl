@@ -6,6 +6,8 @@ export ∅
 
 abstract type SpecialSet end
 Base.in(x, ::SpecialSet) = false
+Base.issubset(::SpecialSet, ::SpecialSet) = false
+Base.issubset(s, t::SpecialSet) = all(in(t), s)
 
 
 const ∅ = Set()

@@ -1,3 +1,6 @@
+using Combinatorics: permutations
+
+
 abstract type Operation <: SpecialSet end
 
 
@@ -66,6 +69,15 @@ function intersect(s::SetIntersection, t::SpecialSet)
 end
 intersect(t::SpecialSet, s::SetIntersection) = intersect(s, t)
 intersect(a::SetIntersection, b::SetIntersection) = foldl(intersect, get(b); init=a)
+function Base.issubset(a::SetIntersection, b::SetIntersection)
+    l = max(length(a.sets), length(b.sets))
+    for xs ∈ permutations(collect(a.sets), l), ys ∈ permutations(collect(b.sets), l)
+        all(xs .⊆ ys) && return true
+    end
+    false
+end
+Base.issubset(a::SetIntersection, b::SpecialSet) = any(s -> s ⊆ b, a.sets)
+Base.issubset(a::SpecialSet, b::SetIntersection) = all(s -> a ⊆ s, b.sets)
 condition(var, s::SetIntersection) = join([condition(var, set) for set ∈ s.sets], ", ")
 
 

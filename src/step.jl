@@ -23,6 +23,7 @@ function intersect(s::Step{T}, t::Step{T}) where {T<:Integer}
     m, a = res
     Step{T}(m, a)
 end
+Base.issubset(x::Step{T}, y::Step{T}) where {T} = mod(x.m, y.m) == 0 && mod(x.a, y.m) == y.a
 condition(var, s::Step) = "($var ≡ $(s.a) (mod $(s.m)))"
 
 """

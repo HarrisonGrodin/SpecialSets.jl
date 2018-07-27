@@ -46,6 +46,7 @@ struct SetIntersection <: Operation
         new(data)
     end
 end
+Base.:(==)(a::SetIntersection, b::SetIntersection) = a.sets == b.sets
 Base.get(s::SetIntersection) = s.sets
 Base.eltype(s::SetIntersection) = mapfoldl(eltype, typeintersect, get(s))
 Base.in(x, s::SetIntersection) = all(set -> x ∈ set, get(s))

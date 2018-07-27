@@ -70,9 +70,20 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
     end
 
     @testset "NotEqual" begin
+        @test NotEqual(0) ∩ NotEqual(0) == NotEqual(0)
         @test NotEqual(3) ∩ NotEqual(5) == NotEqual(3, 5)
+
         @test standard(GreaterThan(3), NotEqual(4))
+        @test LessThan(3) ∩ NotEqual(5) == LessThan(3)
+        @test GreaterThan(0, true) ∩ NotEqual(-1) == GreaterThan(0, true)
+        @test standard(LessThan(3), NotEqual(0))
+        @test standard(NotEqual(7.2), GreaterThan(5.5))
         @test_skip LessThan(5, true) ∩ NotEqual(5) == LessThan(5)
         @test_skip GreaterThan(3, true) ∩ NotEqual(3) == GreaterThan(3)
+
+        @test standard(Even, NotEqual(2))
+        @test Even ∩ NotEqual(5) == Even
+        @test standard(Step(5, 2), NotEqual(7))
+        @test Step(5, 2) ∩ NotEqual(1) == Step(5, 2)
     end
 end

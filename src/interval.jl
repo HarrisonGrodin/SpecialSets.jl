@@ -83,11 +83,17 @@ function intersect(a::LessThan{T}, b::GreaterThan{U}) where {T, U}
 
     a, b = convert(LessThan{V}, a), convert(GreaterThan{V}, b)
 
+    result = intersect(a, b)
+    result == nothing && return SetIntersection(a, b)
+    result
+end
+function intersect(a::LessThan{T}, b::GreaterThan{T}) where {T}
     gt = a.value == b.value ? !a.inclusive & b.inclusive : a.value < b.value
     gt && return ∅
 
     a.value == b.value && return (a.inclusive & b.inclusive) ? Set([a.value]) : ∅
-    SetIntersection(a, b)
+
+    nothing
 end
 intersect(b::GreaterThan, a::LessThan) = intersect(a, b)
 

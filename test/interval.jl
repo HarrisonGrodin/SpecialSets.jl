@@ -1,7 +1,6 @@
 using SpecialSets: SetIntersection
+using Combinatorics: permutations
 
-
-standard(a, b) = a ∩ b == SetIntersection(a, b)
 
 @testset "Interval" begin
     @testset "TypeSet" begin
@@ -13,7 +12,7 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
         @test TypeSet(Int) ∩ TypeSet(Float64) == ∅
         @test TypeSet(Int) ∩ TypeSet(Int) == TypeSet(Int)
         @test TypeSet(Integer) ∩ TypeSet(Number) == TypeSet(Integer)
-        @test standard(TypeSet(Int), NotEqual(0))
+        @test _std_intersect(TypeSet(Int), NotEqual(0))
 
         @test TypeSet(Int) ⊆ TypeSet(Int)
         @test TypeSet(Int) ⊆ TypeSet(Number)
@@ -84,14 +83,14 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
     end
 
     @testset "LessThan ∩ GreaterThan" begin
-        @test standard(LessThan(1), GreaterThan(0))
+        @test _std_intersect(LessThan(1), GreaterThan(0))
         @test LessThan(1) ∩ GreaterThan(1) == ∅
         @test LessThan(1, true) ∩ GreaterThan(1) == ∅
         @test LessThan(1) ∩ GreaterThan(1, true) == ∅
         @test LessThan(1, true) ∩ GreaterThan(1, true) == Set([1])
 
         @test GreaterThan(3) ∩ LessThan(4.0) == ∅
-        @test standard(GreaterThan(3.0), LessThan(4.0))
+        @test _std_intersect(GreaterThan(3.0), LessThan(4.0))
         @test GreaterThan{Number}(3) ∩ LessThan(4.0) ==
             SetIntersection(GreaterThan(3.0), LessThan(4.0))
 
@@ -106,17 +105,17 @@ standard(a, b) = a ∩ b == SetIntersection(a, b)
         @test NotEqual(0) ∩ NotEqual(0) == NotEqual(0)
         @test NotEqual(3) ∩ NotEqual(5) == NotEqual(3, 5)
 
-        @test standard(GreaterThan(3), NotEqual(4))
+        @test _std_intersect(GreaterThan(3), NotEqual(4))
         @test LessThan(3) ∩ NotEqual(5) == LessThan(3)
         @test GreaterThan(0, true) ∩ NotEqual(-1) == GreaterThan(0, true)
-        @test standard(LessThan(3), NotEqual(0))
-        @test standard(NotEqual(7.2), GreaterThan(5.5))
+        @test _std_intersect(LessThan(3), NotEqual(0))
+        @test _std_intersect(NotEqual(7.2), GreaterThan(5.5))
         @test_skip LessThan(5, true) ∩ NotEqual(5) == LessThan(5)
         @test_skip GreaterThan(3, true) ∩ NotEqual(3) == GreaterThan(3)
 
-        @test standard(Even, NotEqual(2))
+        @test _std_intersect(Even, NotEqual(2))
         @test Even ∩ NotEqual(5) == Even
-        @test standard(Step(5, 2), NotEqual(7))
+        @test _std_intersect(Step(5, 2), NotEqual(7))
         @test Step(5, 2) ∩ NotEqual(1) == Step(5, 2)
     end
 end

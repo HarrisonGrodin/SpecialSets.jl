@@ -57,9 +57,9 @@ function intersect(s::SetIntersection, t::SpecialSet)
     xs = collect(get(s))
 
     new = nothing
-    for (i, q) ∈ enumerate(ss)
+    for (i, q) ∈ enumerate(xs)
         new = intersect(q, t)
-        new == nothing || (deleteat!(ss, i); break)
+        new == nothing || (deleteat!(xs, i); break)
     end
     new == nothing && return SetIntersection(xs..., t)
 
@@ -70,7 +70,7 @@ end
 intersect(t::SpecialSet, s::SetIntersection) = intersect(s, t)
 intersect(a::SetIntersection, b::SetIntersection) = foldl(intersect, get(b); init=a)
 function Base.issubset(a::SetIntersection, b::SetIntersection)
-    l = max(length(a.sets), length(b.sets))
+    l = min(length(a.sets), length(b.sets))
     for xs ∈ permutations(collect(a.sets), l), ys ∈ permutations(collect(b.sets), l)
         all(xs .⊆ ys) && return true
     end

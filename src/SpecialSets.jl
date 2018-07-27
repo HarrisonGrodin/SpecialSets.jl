@@ -23,7 +23,8 @@ Base.eltype(::InfiniteSet) = Any
 
 include("operations.jl")
 
-include("bounded.jl")
+include("interval.jl")
+include("step.jl")
 
 include("show.jl")
 

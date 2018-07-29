@@ -124,6 +124,7 @@ intersect(a::NotEqual, b::SetIntersection) = invoke(intersect, Tuple{typeof(a),S
 intersect(b::SpecialSet, a::NotEqual) = intersect(a, b)
 intersect(b::SetIntersection, a::NotEqual) = intersect(a, b)
 Base.issubset(a::NotEqual, b::NotEqual) = b.values ⊆ a.values
+Base.issubset(a::SpecialSet, b::NotEqual) = !any(in(a), b.values)
 function condition(var, s::NotEqual)
     length(s.values) == 1 && return "$var ≠ $(first(s.values))"
     "$var ∉ {$(join(s.values, ", "))}"

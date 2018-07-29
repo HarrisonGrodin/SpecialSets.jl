@@ -6,9 +6,11 @@ export ∅
 
 abstract type SpecialSet{T} <: AbstractSet{T} end
 Base.:(==)(a::SpecialSet, b::SpecialSet) = a === b
+Base.:(==)(::AbstractSet, ::SpecialSet) = false
+Base.:(==)(::SpecialSet, ::AbstractSet) = false
 Base.hash(s::SpecialSet, h::UInt) = invoke(hash, Tuple{Any,UInt}, s, zero(UInt))
 Base.in(x, ::SpecialSet) = false
-Base.issubset(::SpecialSet, ::SpecialSet) = false
+Base.issubset(s::SpecialSet, t::SpecialSet) = s ∩ t == s
 Base.issubset(::SpecialSet, t) = false
 Base.issubset(s, t::SpecialSet) = all(in(t), s)
 

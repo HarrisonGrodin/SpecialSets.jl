@@ -122,5 +122,10 @@ using Combinatorics: permutations
         @test Even ∩ NotEqual(5) == Even
         @test _std_intersect(Step(5, 2), NotEqual(7))
         @test Step(5, 2) ∩ NotEqual(1) == Step(5, 2)
+
+        @test Positive ⊆ Nonzero
+        @test Negative ⊆ Nonzero
+        @test (Positive ∩ Negative) ⊆ Nonzero
+        @test Nonnegative ⊈ Nonzero
     end
 end

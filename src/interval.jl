@@ -2,6 +2,10 @@ export TypeSet
 export LessThan, GreaterThan
 export NotEqual
 
+export Negative, Nonpositive
+export Positive, Nonnegative
+export Zero, Nonzero
+
 
 abstract type Interval{T} <: SpecialSet{T} end
 
@@ -124,3 +128,46 @@ function condition(var, s::NotEqual)
     length(s.values) == 1 && return "$var ≠ $(first(s.values))"
     "$var ∉ {$(join(s.values, ", "))}"
 end
+
+
+"""
+    Negative = LessThan{Number}(0)
+
+Negative numbers. ``{x | x < 0}``
+"""
+const Negative = LessThan{Number}(0)
+
+"""
+    Nonpositive = LessThan{Number}(0, true)
+
+Nonpositive numbers. ``{x | x ≤ 0}``
+"""
+const Nonpositive = LessThan{Number}(0, true)
+
+"""
+    Positive = GreaterThan{Number}(0)
+
+Positive numbers. ``{x | x > 0}``
+"""
+const Positive = GreaterThan{Number}(0)
+
+"""
+    Nonnegative = GreaterThan{Number}(0, true)
+
+Nonnegative numbers. ``{x | x ≥ 0}``
+"""
+const Nonnegative = GreaterThan{Number}(0, true)
+
+"""
+    Zero = Set{Number}([0])
+
+Numbers equivalent to zero. ``{0}``
+"""
+const Zero = Set{Number}([0])
+
+"""
+    Nonzero = NotEqual(0)
+
+Nonzero numbers. ``{x | x ≠ 0}``
+"""
+const Nonzero = NotEqual(0)

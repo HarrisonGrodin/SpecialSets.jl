@@ -9,7 +9,7 @@ setname(::Type{Int}) = "ℤ"
 
 
 """
-    condition(var, set::InfiniteSet) -> String
+    condition(var, set::SpecialSet) -> String
 
 Generate the display name for the condition provided by a given set.
 """

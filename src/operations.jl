@@ -1,7 +1,7 @@
 using Combinatorics: permutations
 
 
-abstract type Operation <: SpecialSet end
+abstract type Operation <: SpecialSet{Any} end
 
 
 Base.intersect(x::SpecialSet, xs::SpecialSet...) = foldl(Base.intersect, xs; init=x)
@@ -39,10 +39,10 @@ instances of `SetIntersection`.
     is unclear.
 """
 struct SetIntersection <: Operation
-    sets::Set{SpecialSet}
+    sets::Set{AbstractSet}
 
-    function SetIntersection(sets::SpecialSet...)
-        data = _flatten!(Set{SpecialSet}(), sets...)
+    function SetIntersection(sets::AbstractSet...)
+        data = _flatten!(Set{AbstractSet}(), sets...)
 
         isempty(data) && throw(ArgumentError("Unable to construct intersection with no sets"))
         length(data) == 1 && throw(ArgumentError("Intersection with one set is invalid; use $(first(data))"))

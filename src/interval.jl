@@ -3,8 +3,7 @@ export LessThan, GreaterThan
 export NotEqual
 
 
-abstract type Interval{T} <: InfiniteSet end
-Base.eltype(::Interval{T}) where {T} = T
+abstract type Interval{T} <: SpecialSet{T} end
 
 
 struct TypeSet{T} <: Interval{T} end
@@ -18,7 +17,7 @@ end
 intersect(::TypeSet{T}, ::TypeSet{U}) where {T, U} = _intersect_to_typeset(T, U)
 intersect(::TypeSet{T}, ::Interval{U}) where {T, U} = _intersect_to_typeset(T, U)
 intersect(::Interval{U}, ::TypeSet{T}) where {T, U} = _intersect_to_typeset(T, U)
-Base.issubset(s, ::TypeSet{T}) where {T} = eltype(s) <: T
+Base.issubset(s::AbstractSet, ::TypeSet{T}) where {T} = eltype(s) <: T
 Base.issubset(s::SpecialSet, ::TypeSet{T}) where {T} = eltype(s) <: T
 Base.issubset(s::SetIntersection, ::TypeSet{T}) where {T} = eltype(s) <: T
 condition(var, ::TypeSet{T}) where {T} = "$var ∈ $(setname(T))"
@@ -98,7 +97,7 @@ end
 intersect(b::GreaterThan, a::LessThan) = intersect(a, b)
 
 
-struct NotEqual{T} <: InfiniteSet
+struct NotEqual{T} <: SpecialSet{Any}
     values::Set{T}
     NotEqual{T}() where {T} = throw(ArgumentError("No elements provided to NotEqual; use TypeSet{$T}"))
     NotEqual{T}(xs...) where {T} = new{T}(Set{T}(xs))
@@ -108,7 +107,7 @@ Base.:(==)(a::NotEqual, b::NotEqual) = a.values == b.values
 Base.hash(s::NotEqual, h::UInt) = hash(s.values, hash(typeof(s), h))
 Base.in(x::T, s::NotEqual{T}) where {T} = x ∉ s.values
 intersect(a::NotEqual{T}, b::NotEqual{U}) where {T,U} = NotEqual{typejoin(T,U)}(a.values..., b.values...)
-function intersect(a::NotEqual{T}, b::InfiniteSet) where {T}
+function intersect(a::NotEqual{T}, b::SpecialSet) where {T}
     keep = Set{T}()
     for value ∈ a.values
         value ∈ b && push!(keep, value)
@@ -117,7 +116,9 @@ function intersect(a::NotEqual{T}, b::InfiniteSet) where {T}
     isempty(keep) && return b
     SetIntersection(NotEqual{T}(keep...), b)
 end
-intersect(b::InfiniteSet, a::NotEqual) = intersect(a, b)
+intersect(a::NotEqual, b::SetIntersection) = invoke(intersect, Tuple{typeof(a),SpecialSet}, a, b)
+intersect(b::SpecialSet, a::NotEqual) = intersect(a, b)
+intersect(b::SetIntersection, a::NotEqual) = intersect(a, b)
 Base.issubset(a::NotEqual, b::NotEqual) = b.values ⊆ a.values
 function condition(var, s::NotEqual)
     length(s.values) == 1 && return "$var ≠ $(first(s.values))"

@@ -2,12 +2,12 @@ export Step, Even, Odd
 
 
 """
-    Step{T} <: InfiniteSet
+    Step{T} <: SpecialSet{T}
 
 `Step{T}(m::T, a::T = zero(T))` contains all x::T such that ``x ≡ a (mod m)``, alternatively
 represented as ``x = kn + a``.
 """
-struct Step{T} <: InfiniteSet
+struct Step{T} <: SpecialSet{T}
     m::T
     a::T
     Step{T}(m, a) where {T} = new{T}(m, mod(a, m))

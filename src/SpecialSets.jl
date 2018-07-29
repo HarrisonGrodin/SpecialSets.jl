@@ -9,6 +9,7 @@ Base.:(==)(a::SpecialSet, b::SpecialSet) = a === b
 Base.hash(s::SpecialSet, h::UInt) = invoke(hash, Tuple{Any,UInt}, s, zero(UInt))
 Base.in(x, ::SpecialSet) = false
 Base.issubset(::SpecialSet, ::SpecialSet) = false
+Base.issubset(::SpecialSet, t) = false
 Base.issubset(s, t::SpecialSet) = all(in(t), s)
 
 

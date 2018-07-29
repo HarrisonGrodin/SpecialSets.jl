@@ -7,7 +7,7 @@ _std_intersect(xs...) = intersect(xs...) == SetIntersection(xs...)
 include("interval.jl")
 include("step.jl")
 
-@testset "intersect" begin
+@testset "combinations" begin
     @test _std_intersect(GreaterThan(0), LessThan(3), NotEqual(1))
     @test _std_intersect(GreaterThan(-4), LessThan(10), Even)
 
@@ -20,4 +20,6 @@ include("step.jl")
     for perm ∈ permutations(xs)
         @test intersect(xs...) ⊆ intersect(perm...)
     end
+
+    @test GreaterThan(0) ⊈ Set([1, 2, 3])
 end

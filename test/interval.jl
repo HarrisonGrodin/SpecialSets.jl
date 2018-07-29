@@ -104,6 +104,11 @@ using Combinatorics: permutations
     @testset "NotEqual" begin
         @test NotEqual(0) ∩ NotEqual(0) == NotEqual(0)
         @test NotEqual(3) ∩ NotEqual(5) == NotEqual(3, 5)
+        @test NotEqual{Int}(3) == NotEqual{Number}(3)
+        @test eltype(NotEqual(3)) == Any
+        @test 1 ∈ NotEqual(0)
+        @test 0 ∉ NotEqual(0)
+        @test_broken 0.0 ∈ NotEqual(0)
 
         @test _std_intersect(GreaterThan(3), NotEqual(4))
         @test LessThan(3) ∩ NotEqual(5) == LessThan(3)

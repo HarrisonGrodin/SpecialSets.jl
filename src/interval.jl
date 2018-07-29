@@ -105,7 +105,7 @@ end
 NotEqual(xs...) = NotEqual{typejoin(typeof.(xs)...)}(xs...)
 Base.:(==)(a::NotEqual, b::NotEqual) = a.values == b.values
 Base.hash(s::NotEqual, h::UInt) = hash(s.values, hash(typeof(s), h))
-Base.in(x::T, s::NotEqual{T}) where {T} = x ∉ s.values
+Base.in(x, s::NotEqual) = x ∉ s.values
 intersect(a::NotEqual{T}, b::NotEqual{U}) where {T,U} = NotEqual{typejoin(T,U)}(a.values..., b.values...)
 function intersect(a::NotEqual{T}, b::SpecialSet) where {T}
     keep = Set{T}()

@@ -13,14 +13,13 @@ abstract type Interval{T} <: SpecialSet{T} end
 struct TypeSet{T} <: Interval{T} end
 TypeSet(T::Type) = TypeSet{T}()
 Base.in(::T, ::TypeSet{T}) where {T} = true
-function _intersect_to_typeset(T, U)
+function intersect(::TypeSet{T}, ::TypeSet{U}) where {T, U}
     V = typeintersect(T, U)
     V === Union{} && return ∅
     TypeSet{V}()
 end
-intersect(::TypeSet{T}, ::TypeSet{U}) where {T, U} = _intersect_to_typeset(T, U)
-intersect(::TypeSet{T}, ::Interval{U}) where {T, U} = _intersect_to_typeset(T, U)
-intersect(::Interval{U}, ::TypeSet{T}) where {T, U} = _intersect_to_typeset(T, U)
+intersect(::TypeSet{T}, s::SpecialSet) where {T} = eltype(s) <: T ? s : ∅
+intersect(s::SpecialSet, t::TypeSet) = intersect(t, s)
 Base.issubset(s::AbstractSet, ::TypeSet{T}) where {T} = eltype(s) <: T
 Base.issubset(s::SpecialSet, ::TypeSet{T}) where {T} = eltype(s) <: T
 Base.issubset(s::SetIntersection, ::TypeSet{T}) where {T} = eltype(s) <: T
@@ -121,8 +120,10 @@ function intersect(a::NotEqual{T}, b::SpecialSet) where {T}
     SetIntersection(NotEqual{T}(keep...), b)
 end
 intersect(a::NotEqual, b::SetIntersection) = invoke(intersect, Tuple{typeof(a),SpecialSet}, a, b)
+intersect(a::NotEqual, b::TypeSet) = invoke(intersect, Tuple{typeof(a), SpecialSet}, a, b)
 intersect(b::SpecialSet, a::NotEqual) = intersect(a, b)
 intersect(b::SetIntersection, a::NotEqual) = intersect(a, b)
+intersect(b::TypeSet, a::NotEqual) = invoke(intersect, Tuple{typeof(a), SpecialSet}, a, b)
 Base.issubset(a::NotEqual, b::NotEqual) = b.values ⊆ a.values
 Base.issubset(a::SpecialSet, b::NotEqual) = !any(in(a), b.values)
 function condition(var, s::NotEqual)

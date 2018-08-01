@@ -13,6 +13,7 @@ using Combinatorics: permutations
         @test TypeSet(Int) ∩ TypeSet(Int) == TypeSet(Int)
         @test TypeSet(Integer) ∩ TypeSet(Number) == TypeSet(Integer)
         @test _std_intersect(TypeSet(Int), NotEqual(0))
+        @test TypeSet(Number) ∩ GreaterThan{Number}(0, true) == GreaterThan{Number}(0, true)
 
         @test TypeSet(Int) ⊆ TypeSet(Int)
         @test TypeSet(Int) ⊆ TypeSet(Number)
@@ -20,6 +21,7 @@ using Combinatorics: permutations
         @test TypeSet(Float64) ⊈ TypeSet(Int)
         @test LessThan(3) ⊆ TypeSet(Int)
         @test (GreaterThan(3) ∩ LessThan(12, true)) ⊆ TypeSet(Int)
+        @test TypeSet(Number) ⊈ GreaterThan{Number}(0, true)
     end
 
     @testset "LessThan" begin

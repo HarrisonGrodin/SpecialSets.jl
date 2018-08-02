@@ -129,5 +129,6 @@ using Combinatorics: permutations
         @test Negative ⊆ Nonzero
         @test (Positive ∩ Negative) ⊆ Nonzero
         @test Nonnegative ⊈ Nonzero
+        @test GreaterThan(-1) ∩ LessThan(1) ⊈ NotEqual(0)
     end
 end
